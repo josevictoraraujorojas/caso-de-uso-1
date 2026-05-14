@@ -4,27 +4,25 @@ import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 
-import javax.annotation.Nullable;
 import java.util.Date;
 
 @Node
- public abstract class Esp32 {
+public abstract class Esp32 {
     @Id
     @GeneratedValue
-    private @Nullable Long id;
+    private Long id;
     private String nome;
-    private String mac;
+    private String macAddress;
     private Date dataInstalacao;
 
     public Esp32() {
     }
 
-    @Nullable
     public Long getId() {
         return id;
     }
 
-    public void setId(@Nullable Long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -36,12 +34,12 @@ import java.util.Date;
         this.nome = nome;
     }
 
-    public String getMac() {
-        return mac;
+    public String getMacAddress() {
+        return macAddress;
     }
 
-    public void setMac(String mac) {
-        this.mac = mac;
+    public void setMacAddress(String macAddress) {
+        this.macAddress = macAddress;
     }
 
     public Date getDataInstalacao() {

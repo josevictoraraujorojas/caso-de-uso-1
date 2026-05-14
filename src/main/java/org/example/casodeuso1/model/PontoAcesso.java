@@ -5,52 +5,61 @@ import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-import javax.annotation.Nullable;
 import java.util.Set;
 
 @Node
 public class PontoAcesso {
     @Id
     @GeneratedValue
-    private @Nullable Long id;
-    private String BSSID;
-    private String SSID;
-    @Relationship(type = "ENVIA_PARA_CLIENTE", direction = Relationship.Direction.OUTGOING)
-    private Set<DispositivoWifi> clientes;
+    private Long id;
+    private String bssid;
+    @Relationship(direction = Relationship.Direction.OUTGOING,type = "ENVIA_PARA_CLIENTE")
+    private Set<DispositivoWifi> dispositivosWifiEnvia;
+    @Relationship(direction = Relationship.Direction.INCOMING)
+    private Set<DispositivoWifi> dispositivossWifiRecebe;
+    @Relationship(direction = Relationship.Direction.INCOMING)
+    private Set<Sniffer> sniffers;
 
     public PontoAcesso() {
     }
 
-    public Set<DispositivoWifi> getClientes() {
-        return clientes;
-    }
-
-    public void setClientes(Set<DispositivoWifi> clientes) {
-        this.clientes = clientes;
-    }
-
-    @Nullable
     public Long getId() {
         return id;
     }
 
-    public void setId(@Nullable Long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getBSSID() {
-        return BSSID;
+    public String getBssid() {
+        return bssid;
     }
 
-    public void setBSSID(String BSSID) {
-        this.BSSID = BSSID;
+    public void setBssid(String bssid) {
+        this.bssid = bssid;
     }
 
-    public String getSSID() {
-        return SSID;
+    public Set<DispositivoWifi> getDispositivosWifiEnvia() {
+        return dispositivosWifiEnvia;
     }
 
-    public void setSSID(String SSID) {
-        this.SSID = SSID;
+    public void setDispositivosWifiEnvia(Set<DispositivoWifi> dispositivosWifiEnvia) {
+        this.dispositivosWifiEnvia = dispositivosWifiEnvia;
+    }
+
+    public Set<DispositivoWifi> getDispositivossWifiRecebe() {
+        return dispositivossWifiRecebe;
+    }
+
+    public void setDispositivossWifiRecebe(Set<DispositivoWifi> dispositivossWifiRecebe) {
+        this.dispositivossWifiRecebe = dispositivossWifiRecebe;
+    }
+
+    public Set<Sniffer> getSniffers() {
+        return sniffers;
+    }
+
+    public void setSniffers(Set<Sniffer> sniffers) {
+        this.sniffers = sniffers;
     }
 }
