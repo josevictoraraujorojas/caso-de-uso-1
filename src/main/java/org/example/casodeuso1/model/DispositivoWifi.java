@@ -17,12 +17,7 @@ public class DispositivoWifi {
     private Set<DispositivoWifi> dispositivosWifi;
     @Relationship(direction = Relationship.Direction.OUTGOING,type = "ENVIA_PARA_PA")
     private Set<PontoAcesso> pontosAcessoEnvia;
-    @Relationship(direction = Relationship.Direction.INCOMING)
-    private Set<Sniffer> sniffers;
-    @Relationship(direction = Relationship.Direction.INCOMING)
-    private Set<DispositivoWifi> dispositivoWifiDireto;
-    @Relationship(direction = Relationship.Direction.INCOMING)
-    private Set<PontoAcesso> pontosAcessoRecebe;
+
 
 
     public DispositivoWifi() {
@@ -60,27 +55,4 @@ public class DispositivoWifi {
         this.pontosAcessoEnvia = pontosAcessoEnvia;
     }
 
-    public Set<PontoAcesso> getPontosAcessoRecebe() {
-        return pontosAcessoRecebe;
-    }
-
-    public void setPontosAcessoRecebe(Set<PontoAcesso> pontosAcessoRecebe) {
-        this.pontosAcessoRecebe = pontosAcessoRecebe;
-    }
-
-    public Set<Sniffer> getSniffers() {
-        return sniffers;
-    }
-
-    public void setSniffers(Set<Sniffer> sniffers) {
-        this.sniffers = sniffers;
-    }
-
-    public Set<DispositivoWifi> getDispositivoWifiDireto() {
-        return dispositivoWifiDireto;
-    }
-
-    public void setDispositivoWifiDireto(Set<DispositivoWifi> dispositivoWifiDireto) {
-        this.dispositivoWifiDireto = dispositivoWifiDireto;
-    }
 }

@@ -22,16 +22,19 @@ public class WifiData {
     // TAGS
 
     @Column(tag = true, name = "esp_sniffer_id")
-    private String espSnifferId;
+    private Long espSnifferId;
 
     @Column(tag = true, name = "lab_id")
-    private String labId;
+    private Long labId;
 
     @Column(tag = true, name = "predio_id")
-    private String predioId;
+    private Long predioId;
 
     @Column(tag = true, name = "ponto_acesso_id")
-    private String pontoAcessoId;
+    private Long pontoAcessoId;
+
+    @Column(tag = true, name = "dispositivo_wifi_id")
+    private Long dispositivoWifiId;
 
     public WifiData() {
     }
@@ -68,35 +71,43 @@ public class WifiData {
         this.chanel = chanel;
     }
 
-    public String getEspSnifferId() {
+    public Long getEspSnifferId() {
         return espSnifferId;
     }
 
-    public void setEspSnifferId(String espSnifferId) {
+    public void setEspSnifferId(Long espSnifferId) {
         this.espSnifferId = espSnifferId;
     }
 
-    public String getLabId() {
+    public Long getLabId() {
         return labId;
     }
 
-    public void setLabId(String labId) {
+    public void setLabId(Long labId) {
         this.labId = labId;
     }
 
-    public String getPredioId() {
+    public Long getPredioId() {
         return predioId;
     }
 
-    public void setPredioId(String predioId) {
+    public void setPredioId(Long predioId) {
         this.predioId = predioId;
     }
 
-    public String getPontoAcessoId() {
+    public Long getPontoAcessoId() {
         return pontoAcessoId;
     }
 
-    public void setPontoAcessoId(String pontoAcessoId) {
+    public void setPontoAcessoId(Long pontoAcessoId) {
         this.pontoAcessoId = pontoAcessoId;
+    }
+
+    public Long getDispositivoWifiId() {
+        return dispositivoWifiId;
+    }
+
+    public void setDispositivoWifiId(Long dispositivoWifiId) {
+        this.dispositivoWifiId = dispositivoWifiId;
     }
 }

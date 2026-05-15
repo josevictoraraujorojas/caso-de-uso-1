@@ -19,8 +19,6 @@ public class FiltroLinha {
     private Set<Aparelho> aparelhos;
     @Relationship(direction = Relationship.Direction.OUTGOING,type = "MONITORADO_POR" )
     private MedidorEnergia medidorEnergia;
-    @Relationship(direction = Relationship.Direction.INCOMING)
-    private Laboratorio laboratorio;
 
     public FiltroLinha() {
     }
@@ -73,11 +71,4 @@ public class FiltroLinha {
         this.medidorEnergia = medidorEnergia;
     }
 
-    public Laboratorio getLaboratorio() {
-        return laboratorio;
-    }
-
-    public void setLaboratorio(Laboratorio laboratorio) {
-        this.laboratorio = laboratorio;
-    }
 }

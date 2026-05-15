@@ -18,8 +18,6 @@ public class MedidorEnergia {
     private MonitorEnergia monitorEnergia;
     @Relationship(direction = Relationship.Direction.OUTGOING,type = "MEDE")
     private Set<Aparelho> aparelhos;
-    @Relationship(direction = Relationship.Direction.INCOMING)
-    private FiltroLinha filtroLinha;
 
     public MedidorEnergia() {
     }
@@ -64,11 +62,4 @@ public class MedidorEnergia {
         this.aparelhos = aparelhos;
     }
 
-    public FiltroLinha getFiltroLinha() {
-        return filtroLinha;
-    }
-
-    public void setFiltroLinha(FiltroLinha filtroLinha) {
-        this.filtroLinha = filtroLinha;
-    }
 }

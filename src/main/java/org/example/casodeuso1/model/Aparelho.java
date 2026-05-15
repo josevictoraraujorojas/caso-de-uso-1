@@ -12,8 +12,31 @@ public class Aparelho {
     private Long id;
     private String nome;
     private int potenciaNominal;
-    @Relationship(direction = Relationship.Direction.INCOMING)
-    private MedidorEnergia medidorEnergia;
-    @Relationship(direction = Relationship.Direction.INCOMING)
-    private FiltroLinha filtroLinha;
+
+    public Aparelho() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public int getPotenciaNominal() {
+        return potenciaNominal;
+    }
+
+    public void setPotenciaNominal(int potenciaNominal) {
+        this.potenciaNominal = potenciaNominal;
+    }
 }
