@@ -1,20 +1,12 @@
-package org.example.casodeuso1.model;
+package org.example.casodeuso1.dto;
 
-import org.springframework.data.neo4j.core.schema.GeneratedValue;
-import org.springframework.data.neo4j.core.schema.Id;
-import org.springframework.data.neo4j.core.schema.Node;
-import org.springframework.data.neo4j.core.schema.Relationship;
-
-@Node
-public class Aparelho {
-    @Id
-    @GeneratedValue
+public class AparelhoResponseDTO {
     private Long id;
     private String nome;
     private int potenciaNominal;
     private double corrente;
 
-    public Aparelho() {
+    public AparelhoResponseDTO() {
     }
 
     public Long getId() {

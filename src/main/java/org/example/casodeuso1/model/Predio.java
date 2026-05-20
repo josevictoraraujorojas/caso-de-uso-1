@@ -17,7 +17,7 @@ public class Predio {
     @Relationship(direction = Relationship.Direction.OUTGOING,type = "TEM_LABORATORIO")
     private Set<Laboratorio> laboratorios;
     @Relationship(direction = Relationship.Direction.OUTGOING, type = "POSSUI_SNIFFER")
-    public Set<Sniffer> sniffers;
+    private Set<Sniffer> sniffers;
 
     public Predio() {
     }
