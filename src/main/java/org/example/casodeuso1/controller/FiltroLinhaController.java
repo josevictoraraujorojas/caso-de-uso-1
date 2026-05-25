@@ -41,6 +41,34 @@ public class FiltroLinhaController {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping("/{filtroLinhaId}/aparelho/{aparelhoId}")
+    public ResponseEntity<FiltroLinhaResponseDTO> adicionarAparelho(
+            @PathVariable Long filtroLinhaId,
+            @PathVariable Long aparelhoId) {
+
+        FiltroLinhaResponseDTO response =
+                filtroLinhaService.adicionarAparelho(
+                        filtroLinhaId,
+                        aparelhoId
+                );
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{filtroLinhaId}/medidorEnergia/{medidorEnergiaId}")
+    public ResponseEntity<FiltroLinhaResponseDTO> adicionarMedidorEnergia(
+            @PathVariable Long filtroLinhaId,
+            @PathVariable Long medidorEnergiaId) {
+
+        FiltroLinhaResponseDTO response =
+                filtroLinhaService.adicionarMedidorEnergia(
+                        filtroLinhaId,
+                        medidorEnergiaId
+                );
+
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/{filtroLinhaId}")
     public ResponseEntity<FiltroLinhaResponseDTO> buscarPorId(
             @PathVariable Long filtroLinhaId) {
@@ -53,12 +81,42 @@ public class FiltroLinhaController {
 
     @GetMapping
     public ResponseEntity<List<FiltroLinhaResponseDTO>> listar() {
-        return ResponseEntity.ok(filtroLinhaService.listar());
+
+        return ResponseEntity.ok(
+                filtroLinhaService.listar()
+        );
+    }
+
+    @DeleteMapping("/{filtroLinhaId}/aparelho/{aparelhoId}")
+    public ResponseEntity<FiltroLinhaResponseDTO> removerAparelho(
+            @PathVariable Long filtroLinhaId,
+            @PathVariable Long aparelhoId) {
+
+        return ResponseEntity.ok(
+                filtroLinhaService.removerAparelho(
+                        filtroLinhaId,
+                        aparelhoId
+                )
+        );
+    }
+
+    @DeleteMapping("/{filtroLinhaId}/medidorEnergia")
+    public ResponseEntity<FiltroLinhaResponseDTO> removerMedidorEnergia(
+            @PathVariable Long filtroLinhaId) {
+
+        return ResponseEntity.ok(
+                filtroLinhaService.removerMedidorEnergia(
+                        filtroLinhaId
+                )
+        );
     }
 
     @DeleteMapping("/{filtroLinhaId}")
-    public ResponseEntity<Void> deletar(@PathVariable Long filtroLinhaId) {
+    public ResponseEntity<Void> deletar(
+            @PathVariable Long filtroLinhaId) {
+
         filtroLinhaService.excluir(filtroLinhaId);
+
         return ResponseEntity.noContent().build();
     }
 }

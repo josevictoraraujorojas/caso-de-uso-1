@@ -15,8 +15,7 @@ public class Laboratorio {
     private String nome;
     @Relationship(direction = Relationship.Direction.OUTGOING,type = "POSSUI_FILTRO")
     private Set<FiltroLinha> filtroLinhas;
-    @Relationship(direction = Relationship.Direction.INCOMING)
-    private Predio predio;
+
 
     public Laboratorio() {
     }
@@ -45,11 +44,15 @@ public class Laboratorio {
         this.filtroLinhas = filtroLinhas;
     }
 
-    public Predio getPredio() {
-        return predio;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Laboratorio that)) return false;
+        return id != null && id.equals(that.id);
     }
 
-    public void setPredio(Predio predio) {
-        this.predio = predio;
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

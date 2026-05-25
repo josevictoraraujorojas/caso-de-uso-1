@@ -5,6 +5,7 @@ import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
+import java.util.Objects;
 import java.util.Set;
 
 @Node
@@ -44,4 +45,15 @@ public class PontoAcesso {
         this.dispositivosWifiEnvia = dispositivosWifiEnvia;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PontoAcesso that)) return false;
+        return id != null && id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

@@ -39,6 +39,19 @@ public class PontoAcessoController {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping("/{pontoAcessoId}/dispositivoWifi/{dispositivoWifiId}")
+    public ResponseEntity<PontoAcessoResponseDTO> adicionarDispositivoWifi(
+            @PathVariable Long pontoAcessoId,
+            @PathVariable Long dispositivoWifiId) {
+
+        return ResponseEntity.ok(
+                pontoAcessoService.adicionarDispositivoWifi(
+                        pontoAcessoId,
+                        dispositivoWifiId
+                )
+        );
+    }
+
     @GetMapping("/{pontoAcessoId}")
     public ResponseEntity<PontoAcessoResponseDTO> buscarPorId(
             @PathVariable Long pontoAcessoId) {
@@ -54,11 +67,25 @@ public class PontoAcessoController {
         return ResponseEntity.ok(pontoAcessoService.listar());
     }
 
+    @DeleteMapping("/{pontoAcessoId}/dispositivoWifi/{dispositivoWifiId}")
+    public ResponseEntity<PontoAcessoResponseDTO> removerDispositivoWifi(
+            @PathVariable Long pontoAcessoId,
+            @PathVariable Long dispositivoWifiId) {
+
+        return ResponseEntity.ok(
+                pontoAcessoService.removerDispositivoWifi(
+                        pontoAcessoId,
+                        dispositivoWifiId
+                )
+        );
+    }
+
     @DeleteMapping("/{pontoAcessoId}")
     public ResponseEntity<Void> deletar(
             @PathVariable Long pontoAcessoId) {
 
         pontoAcessoService.excluir(pontoAcessoId);
+
         return ResponseEntity.noContent().build();
     }
 }

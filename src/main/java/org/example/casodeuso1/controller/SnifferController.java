@@ -39,6 +39,32 @@ public class SnifferController {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping("/{snifferId}/dispositivoWifi/{dispositivoWifiId}")
+    public ResponseEntity<SnifferResponseDTO> adicionarDispositivoWifi(
+            @PathVariable Long snifferId,
+            @PathVariable Long dispositivoWifiId) {
+
+        return ResponseEntity.ok(
+                snifferService.adicionarDispositivoWifi(
+                        snifferId,
+                        dispositivoWifiId
+                )
+        );
+    }
+
+    @PutMapping("/{snifferId}/pontoAcesso/{pontoAcessoId}")
+    public ResponseEntity<SnifferResponseDTO> adicionarPontoAcesso(
+            @PathVariable Long snifferId,
+            @PathVariable Long pontoAcessoId) {
+
+        return ResponseEntity.ok(
+                snifferService.adicionarPontoAcesso(
+                        snifferId,
+                        pontoAcessoId
+                )
+        );
+    }
+
     @GetMapping("/{snifferId}")
     public ResponseEntity<SnifferResponseDTO> buscarPorId(
             @PathVariable Long snifferId) {
@@ -52,6 +78,32 @@ public class SnifferController {
     @GetMapping
     public ResponseEntity<List<SnifferResponseDTO>> listar() {
         return ResponseEntity.ok(snifferService.listar());
+    }
+
+    @DeleteMapping("/{snifferId}/dispositivoWifi/{dispositivoWifiId}")
+    public ResponseEntity<SnifferResponseDTO> removerDispositivoWifi(
+            @PathVariable Long snifferId,
+            @PathVariable Long dispositivoWifiId) {
+
+        return ResponseEntity.ok(
+                snifferService.removerDispositivoWifi(
+                        snifferId,
+                        dispositivoWifiId
+                )
+        );
+    }
+
+    @DeleteMapping("/{snifferId}/pontoAcesso/{pontoAcessoId}")
+    public ResponseEntity<SnifferResponseDTO> removerPontoAcesso(
+            @PathVariable Long snifferId,
+            @PathVariable Long pontoAcessoId) {
+
+        return ResponseEntity.ok(
+                snifferService.removerPontoAcesso(
+                        snifferId,
+                        pontoAcessoId
+                )
+        );
     }
 
     @DeleteMapping("/{snifferId}")

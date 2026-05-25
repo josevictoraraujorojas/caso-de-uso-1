@@ -41,6 +41,34 @@ public class LaboratorioController {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping("/{laboratorioId}/filtroLinha/{filtroLinhaId}")
+    public ResponseEntity<LaboratorioResponseDTO> adicionarFiltroLinha(
+            @PathVariable Long laboratorioId,
+            @PathVariable Long filtroLinhaId) {
+
+        LaboratorioResponseDTO response =
+                laboratorioService.adicionarFiltroLinha(
+                        laboratorioId,
+                        filtroLinhaId
+                );
+
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{laboratorioId}/filtroLinha/{filtroLinhaId}")
+    public ResponseEntity<LaboratorioResponseDTO> removerFiltroLinha(
+            @PathVariable Long laboratorioId,
+            @PathVariable Long filtroLinhaId) {
+
+        LaboratorioResponseDTO response =
+                laboratorioService.removerFiltroLinha(
+                        laboratorioId,
+                        filtroLinhaId
+                );
+
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/{laboratorioId}")
     public ResponseEntity<LaboratorioResponseDTO> buscarPorId(
             @PathVariable Long laboratorioId) {
@@ -53,12 +81,18 @@ public class LaboratorioController {
 
     @GetMapping
     public ResponseEntity<List<LaboratorioResponseDTO>> listar() {
-        return ResponseEntity.ok(laboratorioService.listar());
+
+        return ResponseEntity.ok(
+                laboratorioService.listar()
+        );
     }
 
     @DeleteMapping("/{laboratorioId}")
-    public ResponseEntity<Void> deletar(@PathVariable Long laboratorioId) {
+    public ResponseEntity<Void> deletar(
+            @PathVariable Long laboratorioId) {
+
         laboratorioService.excluir(laboratorioId);
+
         return ResponseEntity.noContent().build();
     }
 }

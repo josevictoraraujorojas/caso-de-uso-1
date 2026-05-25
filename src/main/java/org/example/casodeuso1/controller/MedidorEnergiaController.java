@@ -44,6 +44,32 @@ public class MedidorEnergiaController {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping("/{medidorEnergiaId}/monitorEnergia/{monitorEnergiaId}")
+    public ResponseEntity<MedidorEnergiaResponseDTO> adicionarMonitorEnergia(
+            @PathVariable Long medidorEnergiaId,
+            @PathVariable Long monitorEnergiaId) {
+
+        return ResponseEntity.ok(
+                medidorEnergiaService.adicionarMonitorEnergia(
+                        medidorEnergiaId,
+                        monitorEnergiaId
+                )
+        );
+    }
+
+    @PutMapping("/{medidorEnergiaId}/aparelho/{aparelhoId}")
+    public ResponseEntity<MedidorEnergiaResponseDTO> adicionarAparelho(
+            @PathVariable Long medidorEnergiaId,
+            @PathVariable Long aparelhoId) {
+
+        return ResponseEntity.ok(
+                medidorEnergiaService.adicionarAparelho(
+                        medidorEnergiaId,
+                        aparelhoId
+                )
+        );
+    }
+
     @GetMapping("/{medidorEnergiaId}")
     public ResponseEntity<MedidorEnergiaResponseDTO> buscarPorId(
             @PathVariable Long medidorEnergiaId) {
@@ -59,6 +85,30 @@ public class MedidorEnergiaController {
 
         return ResponseEntity.ok(
                 medidorEnergiaService.listar()
+        );
+    }
+
+    @DeleteMapping("/{medidorEnergiaId}/monitorEnergia")
+    public ResponseEntity<MedidorEnergiaResponseDTO> removerMonitorEnergia(
+            @PathVariable Long medidorEnergiaId) {
+
+        return ResponseEntity.ok(
+                medidorEnergiaService.removerMonitorEnergia(
+                        medidorEnergiaId
+                )
+        );
+    }
+
+    @DeleteMapping("/{medidorEnergiaId}/aparelho/{aparelhoId}")
+    public ResponseEntity<MedidorEnergiaResponseDTO> removerAparelho(
+            @PathVariable Long medidorEnergiaId,
+            @PathVariable Long aparelhoId) {
+
+        return ResponseEntity.ok(
+                medidorEnergiaService.removerAparelho(
+                        medidorEnergiaId,
+                        aparelhoId
+                )
         );
     }
 

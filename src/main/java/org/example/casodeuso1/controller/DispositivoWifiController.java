@@ -40,6 +40,17 @@ public class DispositivoWifiController {
 
         return ResponseEntity.ok(response);
     }
+    @PutMapping("/{dispositivoRemetenteId}/pontoAcesso/{pontoAcessoDestinatarioId}")
+    public ResponseEntity<DispositivoWifiResponseDTO> adicionarPontoAcesso(@PathVariable Long dispositivoRemetenteId , @PathVariable Long pontoAcessoDestinatarioId) {
+        DispositivoWifiResponseDTO response = dispositivoWifiService.adicionarPontoAcesso(dispositivoRemetenteId, pontoAcessoDestinatarioId);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{dispositivoRemetenteId}/dispositivoWifi/{dispositivoDestinatarioId}")
+    public ResponseEntity<DispositivoWifiResponseDTO> adicionarDispositivoWifi(@PathVariable Long dispositivoRemetenteId , @PathVariable Long dispositivoDestinatarioId) {
+        DispositivoWifiResponseDTO response = dispositivoWifiService.adicionarDispositivoWifi(dispositivoRemetenteId, dispositivoDestinatarioId);
+        return ResponseEntity.ok(response);
+    }
 
     @GetMapping("/{dispositivoId}")
     public ResponseEntity<DispositivoWifiResponseDTO> buscarPorId(
@@ -54,6 +65,20 @@ public class DispositivoWifiController {
     @GetMapping
     public ResponseEntity<List<DispositivoWifiResponseDTO>> listar() {
         return ResponseEntity.ok(dispositivoWifiService.listar());
+    }
+
+    @DeleteMapping("/{dispositivoRemetenteId}/pontoAcesso/{pontoAcessoDestinatarioId}")
+    public ResponseEntity<DispositivoWifiResponseDTO> removerPontoAcesso(@PathVariable Long dispositivoRemetenteId, @PathVariable Long pontoAcessoDestinatarioId) {
+        return ResponseEntity.ok(
+                dispositivoWifiService.removerPontoAcesso(dispositivoRemetenteId, pontoAcessoDestinatarioId)
+        );
+    }
+
+    @DeleteMapping("/{dispositivoRemetenteId}/dispositivoWifi/{dispositivoDestinatarioId}")
+    public ResponseEntity<DispositivoWifiResponseDTO> removerDispositivoWifi(@PathVariable Long dispositivoRemetenteId, @PathVariable Long dispositivoDestinatarioId) {
+        return ResponseEntity.ok(
+                dispositivoWifiService.removerDispositivoWifi(dispositivoRemetenteId, dispositivoDestinatarioId)
+        );
     }
 
     @DeleteMapping("/{dispositivoId}")
