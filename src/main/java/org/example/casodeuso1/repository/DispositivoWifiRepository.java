@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DispositivoWifiRepository extends Neo4jRepository<DispositivoWifi, Long> {
 
+    DispositivoWifi findByEnderecoMac(String numero);
+
 }

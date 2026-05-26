@@ -135,11 +135,10 @@ public class WifiDataRepositoryImpl implements WifiDataRepository {
         data.setTime(record.getTime());
 
         data.setRssi(toInteger(record.getValueByKey("rssi")));
-        data.setTamanhoBytes(toInteger(record.getValueByKey("tamanho_bytes")));
-        data.setChanel(toInteger(record.getValueByKey("chanel")));
+        data.setTamanho(toInteger(record.getValueByKey("tamanho_bytes")));
+        data.setCanal(toInteger(record.getValueByKey("chanel")));
 
         data.setEspSnifferId(toLong(record.getValueByKey("esp_sniffer_id")));
-        data.setLabId(toLong(record.getValueByKey("lab_id")));
         data.setPredioId(toLong(record.getValueByKey("predio_id")));
         data.setPontoAcessoId(toLong(record.getValueByKey("ponto_acesso_id")));
         data.setDispositivoWifiId(toLong(record.getValueByKey("dispositivo_wifi_id")));

@@ -1,5 +1,6 @@
 package org.example.casodeuso1.service;
 
+import org.example.casodeuso1.dto.DispositivoWifiResponseDTO;
 import org.example.casodeuso1.dto.PontoAcessoCreateDTO;
 import org.example.casodeuso1.dto.PontoAcessoResponseDTO;
 import org.example.casodeuso1.model.DispositivoWifi;
@@ -89,10 +90,7 @@ public class PontoAcessoService {
         }
 
         if (pontoAcesso.getDispositivosWifiEnvia().contains(dispositivoWifi)) {
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT,
-                    "Esse dispositivo Wi-Fi já está vinculado ao ponto de acesso"
-            );
+            return null;
         }
 
         pontoAcesso.getDispositivosWifiEnvia().add(dispositivoWifi);
@@ -155,6 +153,19 @@ public class PontoAcessoService {
                 pontoAcesso,
                 PontoAcessoResponseDTO.class
         );
+    }
+
+    // BUSCAR POR MAC
+    public PontoAcessoResponseDTO buscarPorMac(String mac) {
+
+        PontoAcesso pontoAcesso = pontoAcessoRepository.findByBssid(mac);
+
+        if (pontoAcesso == null) {
+            return null;
+        }
+
+
+        return DataMapper.parseObject(pontoAcesso, PontoAcessoResponseDTO.class);
     }
 
     public List<PontoAcessoResponseDTO> listar() {

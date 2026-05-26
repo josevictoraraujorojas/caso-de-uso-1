@@ -12,37 +12,39 @@ public class EnergiaData {
     @Column(timestamp = true)
     private Instant time;
 
+    @Column(name = "tensao")
+    private Double tensao;
+
     @Column(name = "corrente")
     private Double corrente;
-
-    @Column(name = "energia_kwh")
-    private Double energiaKwh;
-
-    @Column(name = "fator_potencia")
-    private Double fatorPotencia;
 
     @Column(name = "potencia")
     private Double potencia;
 
-    @Column(name = "tensao")
-    private Double tensao;
+    @Column(name = "energia_kwh")
+    private Double energiaKwh;
+
+    @Column(name = "frequencia")
+    private Double frequencia;
+
+    @Column(name = "fator_potencia")
+    private Double fatorPotencia;
 
     // TAGS
-
-    @Column(tag = true, name = "aparelho_id")
-    private String aparelhoId;
-
     @Column(tag = true, name = "esp_id")
-    private String espId;
+    private Long espId;
+
+    @Column(tag = true, name = "medidor_energia_id")
+    private Long medidorEnergiaId;
 
     @Column(tag = true, name = "filtro_id")
-    private String filtroId;
+    private Long filtroId;
 
     @Column(tag = true, name = "lab_id")
-    private String labId;
+    private Long labId;
 
     @Column(tag = true, name = "predio_id")
-    private String predioId;
+    private Long predioId;
 
     public EnergiaData() {
     }
@@ -95,43 +97,52 @@ public class EnergiaData {
         this.tensao = tensao;
     }
 
-    public String getAparelhoId() {
-        return aparelhoId;
-    }
 
-    public void setAparelhoId(String aparelhoId) {
-        this.aparelhoId = aparelhoId;
-    }
-
-    public String getEspId() {
+    public Long getEspId() {
         return espId;
     }
 
-    public void setEspId(String espId) {
+    public void setEspId(Long espId) {
         this.espId = espId;
     }
 
-    public String getFiltroId() {
+    public Double getFrequencia() {
+        return frequencia;
+    }
+
+    public void setFrequencia(Double frequencia) {
+        this.frequencia = frequencia;
+    }
+
+    public Long getMedidorEnergiaId() {
+        return medidorEnergiaId;
+    }
+
+    public void setMedidorEnergiaId(Long medidorEnergiaId) {
+        this.medidorEnergiaId = medidorEnergiaId;
+    }
+
+    public Long getFiltroId() {
         return filtroId;
     }
 
-    public void setFiltroId(String filtroId) {
+    public void setFiltroId(Long filtroId) {
         this.filtroId = filtroId;
     }
 
-    public String getLabId() {
+    public Long getLabId() {
         return labId;
     }
 
-    public void setLabId(String labId) {
+    public void setLabId(Long labId) {
         this.labId = labId;
     }
 
-    public String getPredioId() {
+    public Long getPredioId() {
         return predioId;
     }
 
-    public void setPredioId(String predioId) {
+    public void setPredioId(Long predioId) {
         this.predioId = predioId;
     }
 }

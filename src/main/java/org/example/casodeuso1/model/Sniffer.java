@@ -11,6 +11,8 @@ public class Sniffer extends Esp32{
     private Set<DispositivoWifi> dispositivosWifi;
     @Relationship(direction = Relationship.Direction.OUTGOING,type = "MONITORA_TRAFEGO_PONTOACESSO")
     private Set<PontoAcesso> pontosAcesso;
+    @Relationship(direction = Relationship.Direction.INCOMING,type = "POSSUI_SNIFFER")
+    private Predio predio;
 
 
     public Sniffer() {
@@ -30,5 +32,13 @@ public class Sniffer extends Esp32{
 
     public void setPontosAcesso(Set<PontoAcesso> pontosAcesso) {
         this.pontosAcesso = pontosAcesso;
+    }
+
+    public Predio getPredio() {
+        return predio;
+    }
+
+    public void setPredio(Predio predio) {
+        this.predio = predio;
     }
 }

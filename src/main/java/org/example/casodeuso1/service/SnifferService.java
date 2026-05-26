@@ -54,6 +54,45 @@ public class SnifferService {
         );
     }
 
+    public SnifferResponseDTO salvarOuAtualizar(
+            SnifferCreateDTO snifferCreateDTO) {
+
+        if (snifferCreateDTO == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Dados do sniffer inválidos"
+            );
+        }
+
+        Sniffer snifferExistente = snifferRepository.findByMacAddress(snifferCreateDTO.getMacAddress());
+
+        if (snifferExistente != null) {
+
+            snifferExistente.setNome(
+                    snifferCreateDTO.getNome()
+            );
+
+            snifferExistente.setDataInstalacao(
+                    snifferCreateDTO.getDataInstalacao()
+            );
+
+            return DataMapper.parseObject(
+                    snifferRepository.save(snifferExistente),
+                    SnifferResponseDTO.class
+            );
+        }
+
+        Sniffer novoSniffer = DataMapper.parseObject(
+                snifferCreateDTO,
+                Sniffer.class
+        );
+
+        return DataMapper.parseObject(
+                snifferRepository.save(novoSniffer),
+                SnifferResponseDTO.class
+        );
+    }
+
     public SnifferResponseDTO editar(
             Long snifferId,
             SnifferCreateDTO snifferCreateDTO) {
@@ -98,10 +137,7 @@ public class SnifferService {
         }
 
         if (sniffer.getDispositivosWifi().contains(dispositivoWifi)) {
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT,
-                    "Esse dispositivo Wi-Fi já está vinculado ao sniffer"
-            );
+            return null;
         }
 
         sniffer.getDispositivosWifi().add(dispositivoWifi);
@@ -175,10 +211,7 @@ public class SnifferService {
         }
 
         if (sniffer.getPontosAcesso().contains(pontoAcesso)) {
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT,
-                    "Esse ponto de acesso já está vinculado ao sniffer"
-            );
+            return null;
         }
 
         sniffer.getPontosAcesso().add(pontoAcesso);
@@ -242,6 +275,22 @@ public class SnifferService {
                 sniffer,
                 SnifferResponseDTO.class
         );
+    }
+
+    // BUSCAR POR MAC
+    public Sniffer buscarPorMac(String mac) {
+
+        Sniffer sniffer = snifferRepository.findByMacAddress(mac);
+
+        if (sniffer == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "sniffer não encontrado"
+            );
+        }
+
+
+        return sniffer;
     }
 
     public List<SnifferResponseDTO> listar() {

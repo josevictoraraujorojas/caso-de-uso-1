@@ -15,6 +15,8 @@ public class Laboratorio {
     private String nome;
     @Relationship(direction = Relationship.Direction.OUTGOING,type = "POSSUI_FILTRO")
     private Set<FiltroLinha> filtroLinhas;
+    @Relationship(direction = Relationship.Direction.INCOMING, type = "TEM_LABORATORIO")
+    private Predio predio;
 
 
     public Laboratorio() {
@@ -42,6 +44,14 @@ public class Laboratorio {
 
     public void setFiltroLinhas(Set<FiltroLinha> filtroLinhas) {
         this.filtroLinhas = filtroLinhas;
+    }
+
+    public Predio getPredio() {
+        return predio;
+    }
+
+    public void setPredio(Predio predio) {
+        this.predio = predio;
     }
 
     @Override

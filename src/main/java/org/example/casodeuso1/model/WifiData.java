@@ -14,18 +14,15 @@ public class WifiData {
     private Integer rssi;
 
     @Column(name = "tamanho_bytes")
-    private Integer tamanhoBytes;
+    private Integer tamanho;
 
-    @Column(name = "chanel")
-    private Integer chanel;
+    @Column(name = "canal")
+    private Integer canal;
 
     // TAGS
 
     @Column(tag = true, name = "esp_sniffer_id")
     private Long espSnifferId;
-
-    @Column(tag = true, name = "lab_id")
-    private Long labId;
 
     @Column(tag = true, name = "predio_id")
     private Long predioId;
@@ -55,20 +52,20 @@ public class WifiData {
         this.rssi = rssi;
     }
 
-    public Integer getTamanhoBytes() {
-        return tamanhoBytes;
+    public Integer getTamanho() {
+        return tamanho;
     }
 
-    public void setTamanhoBytes(Integer tamanhoBytes) {
-        this.tamanhoBytes = tamanhoBytes;
+    public void setTamanho(Integer tamanho) {
+        this.tamanho = tamanho;
     }
 
-    public Integer getChanel() {
-        return chanel;
+    public Integer getCanal() {
+        return canal;
     }
 
-    public void setChanel(Integer chanel) {
-        this.chanel = chanel;
+    public void setCanal(Integer canal) {
+        this.canal = canal;
     }
 
     public Long getEspSnifferId() {
@@ -77,14 +74,6 @@ public class WifiData {
 
     public void setEspSnifferId(Long espSnifferId) {
         this.espSnifferId = espSnifferId;
-    }
-
-    public Long getLabId() {
-        return labId;
-    }
-
-    public void setLabId(Long labId) {
-        this.labId = labId;
     }
 
     public Long getPredioId() {

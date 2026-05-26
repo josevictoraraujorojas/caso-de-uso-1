@@ -140,11 +140,11 @@ public class EnergiaDataRepositoryImpl implements EnergiaDataRepository {
         data.setPotencia(toDouble(record.getValueByKey("potencia")));
         data.setTensao(toDouble(record.getValueByKey("tensao")));
 
-        data.setAparelhoId(toStringValue(record.getValueByKey("aparelho_id")));
-        data.setEspId(toStringValue(record.getValueByKey("esp_id")));
-        data.setFiltroId(toStringValue(record.getValueByKey("filtro_id")));
-        data.setLabId(toStringValue(record.getValueByKey("lab_id")));
-        data.setPredioId(toStringValue(record.getValueByKey("predio_id")));
+        data.setEspId(toLong(record.getValueByKey("esp_id")));
+        data.setFiltroId(toLong(record.getValueByKey("filtro_id")));
+        data.setLabId(toLong(record.getValueByKey("lab_id")));
+        data.setPredioId(toLong(record.getValueByKey("predio_id")));
+        data.setMedidorEnergiaId(toLong(record.getValueByKey("medidor_energia_id")));
 
         return data;
     }
@@ -157,11 +157,11 @@ public class EnergiaDataRepositoryImpl implements EnergiaDataRepository {
         return Double.parseDouble(value.toString());
     }
 
-    private String toStringValue(Object value) {
+    private Long toLong(Object value) {
         if (value == null) {
             return null;
         }
 
-        return value.toString();
+        return Long.parseLong(value.toString());
     }
 }

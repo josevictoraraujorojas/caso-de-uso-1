@@ -3,6 +3,7 @@ package org.example.casodeuso1.service;
 import org.example.casodeuso1.dto.DispositivoWifiCreateDTO;
 import org.example.casodeuso1.dto.DispositivoWifiResponseDTO;
 import org.example.casodeuso1.model.DispositivoWifi;
+import org.example.casodeuso1.model.MonitorEnergia;
 import org.example.casodeuso1.model.PontoAcesso;
 import org.example.casodeuso1.repository.DispositivoWifiRepository;
 import org.example.casodeuso1.repository.PontoAcessoRepository;
@@ -77,10 +78,7 @@ public class DispositivoWifiService {
             dispositivoWifi.setDispositivosWifi(new HashSet<>());
         }
         if (dispositivoWifi.getPontosAcessoEnvia().contains(pontoAcesso)){
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT,
-                    "Esse Ponto de Acesso de Destilno já está vinculado a este Dispositivo Remetente"
-            );
+           return null;
         }
         dispositivoWifi.getPontosAcessoEnvia().add(pontoAcesso);
         return DataMapper.parseObject(dispositivoWifiRepository.save(dispositivoWifi), DispositivoWifiResponseDTO.class);
@@ -125,6 +123,19 @@ public class DispositivoWifiService {
                 dispositivoWifi,
                 DispositivoWifiResponseDTO.class
         );
+    }
+
+    // BUSCAR POR MAC
+    public DispositivoWifiResponseDTO buscarPorMac(String mac) {
+
+        DispositivoWifi dispositivoWifi = dispositivoWifiRepository.findByEnderecoMac(mac);
+
+        if (dispositivoWifi == null) {
+        return null;
+        }
+
+
+        return DataMapper.parseObject(dispositivoWifi, DispositivoWifiResponseDTO.class);
     }
 
     public List<DispositivoWifiResponseDTO> listar() {
