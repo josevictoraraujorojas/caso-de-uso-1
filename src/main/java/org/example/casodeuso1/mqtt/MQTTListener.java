@@ -149,11 +149,7 @@ public class MQTTListener {
 
         try {
 
-            MonitorEnergiaCreateDTO dto =
-                    mapper.readValue(
-                            payload,
-                            MonitorEnergiaCreateDTO.class
-                    );
+            MonitorEnergiaCreateDTO dto = mapper.readValue(payload, MonitorEnergiaCreateDTO.class);
 
             dto.setDataInstalacao(new Date());
 
@@ -164,68 +160,40 @@ public class MQTTListener {
         }
     }
 
-    private MonitorEnergia buscarMonitorEnergia(
-            EnergiaDataDTO dto
-    ) {
+    private MonitorEnergia buscarMonitorEnergia(EnergiaDataDTO dto) {
 
-        MonitorEnergia monitorEnergia =
-                monitorEnergiaService.buscarPorMac(
-                        dto.getEsp32Mac()
-                );
+        MonitorEnergia monitorEnergia = monitorEnergiaService.buscarPorMac(dto.getEsp32Mac());
 
         if (monitorEnergia == null) {
-            throw new RuntimeException(
-                    "Monitor de energia não encontrado"
-            );
+            throw new RuntimeException("Monitor de energia não encontrado");
         }
 
         return monitorEnergia;
     }
 
-    private void validarMonitorEnergia(
-            MonitorEnergia monitorEnergia
-    ) {
+    private void validarMonitorEnergia(MonitorEnergia monitorEnergia) {
 
         if (monitorEnergia.getId() == null) {
-            throw new RuntimeException(
-                    "Monitor de energia sem ID"
-            );
+            throw new RuntimeException("Monitor de energia sem ID");
         }
 
         if (monitorEnergia.getMedidorEnergia() == null) {
-            throw new RuntimeException(
-                    "Monitor sem medidor de energia"
-            );
+            throw new RuntimeException("Monitor sem medidor de energia");
         }
 
-        if (monitorEnergia
-                .getMedidorEnergia()
-                .getFiltroLinha() == null) {
+        if (monitorEnergia.getMedidorEnergia().getFiltroLinha() == null) {
 
-            throw new RuntimeException(
-                    "Medidor sem filtro de linha"
-            );
+            throw new RuntimeException("Medidor sem filtro de linha");
         }
 
-        if (monitorEnergia
-                .getMedidorEnergia()
-                .getFiltroLinha()
-                .getLaboratorio() == null) {
+        if (monitorEnergia.getMedidorEnergia().getFiltroLinha().getLaboratorio() == null) {
 
-            throw new RuntimeException(
-                    "Filtro sem laboratório"
-            );
+            throw new RuntimeException("Filtro sem laboratório");
         }
 
-        if (monitorEnergia
-                .getMedidorEnergia()
-                .getFiltroLinha()
-                .getLaboratorio()
-                .getPredio() == null) {
+        if (monitorEnergia.getMedidorEnergia().getFiltroLinha().getLaboratorio().getPredio() == null) {
 
-            throw new RuntimeException(
-                    "Laboratório sem prédio"
-            );
+            throw new RuntimeException("Laboratório sem prédio");
         }
     }
 
@@ -237,77 +205,47 @@ public class MQTTListener {
 
         try {
 
-            WifiDataDTO dto =
-                    mapper.readValue(
-                            payload,
-                            WifiDataDTO.class
-                    );
+            WifiDataDTO dto = mapper.readValue(payload, WifiDataDTO.class);
 
-            Sniffer sniffer =
-                    buscarSniffer(dto);
+            Sniffer sniffer = buscarSniffer(dto);
 
-            WifiData wifiData =
-                    DataMapper.parseObject(
-                            dto,
-                            WifiData.class
-                    );
+            WifiData wifiData = DataMapper.parseObject(dto, WifiData.class);
 
-            String macCliente =
-                    dto.getCliente();
+            String macCliente = dto.getCliente();
 
-            String macAp =
-                    dto.getBssid();
+            String macAp = dto.getBssid();
 
-            if (macInvalido(macCliente)
-                    || macInvalido(macAp)) {
+            if (macInvalido(macCliente) || macInvalido(macAp)) {
 
                 return;
             }
 
-            DispositivoWifiResponseDTO cliente =
-                    buscarOuCriarCliente(macCliente);
+            DispositivoWifiResponseDTO cliente = buscarOuCriarCliente(macCliente);
 
-            PontoAcessoResponseDTO pontoAcesso =
-                    buscarOuCriarPontoAcesso(macAp);
+            PontoAcessoResponseDTO pontoAcesso = buscarOuCriarPontoAcesso(macAp);
 
-            criarRelacionamento(
-                    dto,
-                    cliente,
-                    pontoAcesso
-            );
+            criarRelacionamento(dto, cliente, pontoAcesso);
 
             relacionarSniffer(sniffer, cliente, pontoAcesso);
 
-            salvarWifiData(
-                    wifiData,
-                    cliente,
-                    pontoAcesso,
-                    sniffer
-            );
+            salvarWifiData(wifiData, cliente, pontoAcesso, sniffer);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private DispositivoWifiResponseDTO buscarOuCriarCliente(
-            String macCliente
-    ) {
+    private DispositivoWifiResponseDTO buscarOuCriarCliente(String macCliente) {
 
-        DispositivoWifiResponseDTO cliente =
-                dispositivoWifiService.buscarPorMac(
-                        macCliente
-                );
+        DispositivoWifiResponseDTO cliente = dispositivoWifiService.buscarPorMac(macCliente);
 
         if (cliente == null) {
 
-            DispositivoWifiCreateDTO dto =
-                    new DispositivoWifiCreateDTO();
+            DispositivoWifiCreateDTO dto = new DispositivoWifiCreateDTO();
 
             dto.setEnderecoMac(macCliente);
 
-            cliente =
-                    dispositivoWifiService.salvar(dto);
+            cliente = dispositivoWifiService.salvar(dto);
         }
 
         return cliente;
@@ -317,85 +255,50 @@ public class MQTTListener {
             String macAp
     ) {
 
-        PontoAcessoResponseDTO pontoAcesso =
-                pontoAcessoService.buscarPorMac(macAp);
+        PontoAcessoResponseDTO pontoAcesso = pontoAcessoService.buscarPorMac(macAp);
 
         if (pontoAcesso == null) {
 
-            PontoAcessoCreateDTO dto =
-                    new PontoAcessoCreateDTO();
+            PontoAcessoCreateDTO dto = new PontoAcessoCreateDTO();
 
             dto.setBssid(macAp);
 
-            pontoAcesso =
-                    pontoAcessoService.salvar(dto);
+            pontoAcesso = pontoAcessoService.salvar(dto);
         }
 
         return pontoAcesso;
     }
 
-    private void criarRelacionamento(
-            WifiDataDTO dto,
-            DispositivoWifiResponseDTO cliente,
-            PontoAcessoResponseDTO pontoAcesso
-    ) {
+    private void criarRelacionamento(WifiDataDTO dto, DispositivoWifiResponseDTO cliente, PontoAcessoResponseDTO pontoAcesso) {
 
         if ("CLIENTE_AP".equals(dto.getDirecao())) {
 
-            dispositivoWifiService.adicionarPontoAcesso(
-                    cliente.getId(),
-                    pontoAcesso.getId()
-            );
+            dispositivoWifiService.adicionarPontoAcesso(cliente.getId(), pontoAcesso.getId());
         }
 
         else if ("AP_CLIENTE".equals(dto.getDirecao())) {
 
-            pontoAcessoService.adicionarDispositivoWifi(
-                    pontoAcesso.getId(),
-                    cliente.getId()
-            );
+            pontoAcessoService.adicionarDispositivoWifi(pontoAcesso.getId(), cliente.getId());
         }
     }
 
-    private void relacionarSniffer(
-            Sniffer sniffer,
-            DispositivoWifiResponseDTO cliente,
-            PontoAcessoResponseDTO pontoAcesso
-    ) {
+    private void relacionarSniffer(Sniffer sniffer,DispositivoWifiResponseDTO cliente, PontoAcessoResponseDTO pontoAcesso) {
 
-        snifferService.adicionarDispositivoWifi(
-                sniffer.getId(),
-                cliente.getId()
-        );
+        snifferService.adicionarDispositivoWifi(sniffer.getId(), cliente.getId());
 
-        snifferService.adicionarPontoAcesso(
-                sniffer.getId(),
-                pontoAcesso.getId()
-        );
+        snifferService.adicionarPontoAcesso(sniffer.getId(), pontoAcesso.getId());
     }
 
-    private void salvarWifiData(
-            WifiData wifiData,
-            DispositivoWifiResponseDTO cliente,
-            PontoAcessoResponseDTO pontoAcesso,
-            Sniffer sniffer
+    private void salvarWifiData(WifiData wifiData, DispositivoWifiResponseDTO cliente, PontoAcessoResponseDTO pontoAcesso, Sniffer sniffer
     ) {
 
-        wifiData.setDispositivoWifiId(
-                cliente.getId()
-        );
+        wifiData.setDispositivoWifiId(cliente.getId());
 
-        wifiData.setPontoAcessoId(
-                pontoAcesso.getId()
-        );
+        wifiData.setPontoAcessoId(pontoAcesso.getId());
 
-        wifiData.setEspSnifferId(
-                sniffer.getId()
-        );
+        wifiData.setEspSnifferId(sniffer.getId());
 
-        wifiData.setPredioId(
-                sniffer.getPredio().getId()
-        );
+        wifiData.setPredioId(sniffer.getPredio().getId());
 
         wifiData.setTime(Instant.now());
 
@@ -404,15 +307,7 @@ public class MQTTListener {
 
     private boolean macInvalido(String mac) {
 
-        return mac == null
-                || mac.equalsIgnoreCase(
-                "FF:FF:FF:FF:FF:FF"
-        )
-                || mac.equalsIgnoreCase(
-                "00:00:00:00:00:00"
-        )
-                || mac.startsWith("01:00:5E")
-                || mac.startsWith("33:33");
+        return mac == null || mac.equalsIgnoreCase("FF:FF:FF:FF:FF:FF") || mac.equalsIgnoreCase("00:00:00:00:00:00") || mac.startsWith("01:00:5E") || mac.startsWith("33:33");
     }
 
     /* =========================================================
@@ -423,11 +318,7 @@ public class MQTTListener {
 
         try {
 
-            SnifferCreateDTO dto =
-                    mapper.readValue(
-                            payload,
-                            SnifferCreateDTO.class
-                    );
+            SnifferCreateDTO dto = mapper.readValue(payload, SnifferCreateDTO.class);
 
             dto.setDataInstalacao(new Date());
 
@@ -440,27 +331,17 @@ public class MQTTListener {
 
     private Sniffer buscarSniffer(WifiDataDTO dto) {
 
-        Sniffer sniffer =
-                snifferService.buscarPorMac(
-                        dto.getMacAddress()
-                );
+        Sniffer sniffer = snifferService.buscarPorMac(dto.getMacAddress());
 
         if (sniffer == null) {
-            throw new RuntimeException(
-                    "Sniffer não encontrado"
-            );
+            throw new RuntimeException("Sniffer não encontrado");
         }
 
         if (sniffer.getId() == null) {
-            throw new RuntimeException(
-                    "Sniffer sem ID"
-            );
+            throw new RuntimeException("Sniffer sem ID");
         }
 
-        if (sniffer.getPredio() == null) {
-            throw new RuntimeException(
-                    "Sniffer sem prédio"
-            );
+        if (sniffer.getPredio() == null) {throw new RuntimeException("Sniffer sem prédio");
         }
 
         return sniffer;
