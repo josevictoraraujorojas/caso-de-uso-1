@@ -7,17 +7,12 @@ public class WifiDataDTO {
     private int rssi;
     private int canal;
     private int tamanho;
-
     private int to_ds;
     private int from_ds;
-
     private String direcao;
-
     private String cliente;
     private String bssid;
-
     private String macAddress;
-
     private long timestamp;
 
     public WifiDataDTO() {

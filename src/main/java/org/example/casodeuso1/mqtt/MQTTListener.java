@@ -205,6 +205,14 @@ public class MQTTListener {
 
         try {
 
+            System.out.println("=================================");
+            System.out.println("PAYLOAD WIFI RECEBIDO:");
+            System.out.println(payload);
+            System.out.println("=================================");
+
+            // valida se o JSON está bem formado
+            mapper.readTree(payload);
+
             WifiDataDTO dto = mapper.readValue(payload, WifiDataDTO.class);
 
             Sniffer sniffer = buscarSniffer(dto);
@@ -216,6 +224,13 @@ public class MQTTListener {
             String macAp = dto.getBssid();
 
             if (macInvalido(macCliente) || macInvalido(macAp)) {
+
+                System.out.println(
+                        "MAC inválido. Cliente=" +
+                                macCliente +
+                                " AP=" +
+                                macAp
+                );
 
                 return;
             }
@@ -231,6 +246,17 @@ public class MQTTListener {
             salvarWifiData(wifiData, cliente, pontoAcesso, sniffer);
 
         } catch (Exception e) {
+
+            System.err.println(
+                    "ERRO AO PROCESSAR MENSAGEM WIFI"
+            );
+
+            System.err.println(
+                    "PAYLOAD QUE CAUSOU O ERRO:"
+            );
+
+            System.err.println(payload);
+
             e.printStackTrace();
         }
     }
