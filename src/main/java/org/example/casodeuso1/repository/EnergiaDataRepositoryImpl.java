@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,22 +42,23 @@ public class EnergiaDataRepositoryImpl implements EnergiaDataRepository {
     @Override
     public void salvar(EnergiaData energiaData) {
         energiaData.setTime(Instant.now());
+        Instant instanteRegistrado = energiaData.getTime().truncatedTo(ChronoUnit.SECONDS);
         String experimentoId = MDC.get("experimentoId");
 
         WriteApiBlocking writeApi = influxDBClient.getWriteApiBlocking();
         log.info("[EXPERIMENTO][INFLUX_INICIO] id={} measurement={} bucket={} instante={}",
-                experimentoId, MEASUREMENT, bucket, energiaData.getTime());
+                experimentoId, MEASUREMENT, bucket, instanteRegistrado);
         try {
             writeApi.writeMeasurement(WritePrecision.S, energiaData);
             log.info("[EXPERIMENTO][INFLUX_PERSISTIDO] id={} measurement={} bucket={} instante={} tensao={} corrente={} potencia={} energiaKwh={} frequencia={} fatorPotencia={} espId={} medidorEnergiaId={} filtroId={} labId={} predioId={}",
-                    experimentoId, MEASUREMENT, bucket, energiaData.getTime(),
+                    experimentoId, MEASUREMENT, bucket, instanteRegistrado,
                     energiaData.getTensao(), energiaData.getCorrente(), energiaData.getPotencia(),
                     energiaData.getEnergiaKwh(), energiaData.getFrequencia(), energiaData.getFatorPotencia(),
                     energiaData.getEspId(), energiaData.getMedidorEnergiaId(), energiaData.getFiltroId(),
                     energiaData.getLabId(), energiaData.getPredioId());
         } catch (RuntimeException e) {
             log.error("[EXPERIMENTO][INFLUX_FALHA] id={} measurement={} bucket={} instante={}",
-                    experimentoId, MEASUREMENT, bucket, energiaData.getTime(), e);
+                    experimentoId, MEASUREMENT, bucket, instanteRegistrado, e);
             throw e;
         }
     }
