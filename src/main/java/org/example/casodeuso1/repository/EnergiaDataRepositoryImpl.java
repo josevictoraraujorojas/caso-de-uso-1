@@ -10,6 +10,9 @@ import com.influxdb.query.FluxTable;
 import org.example.casodeuso1.model.EnergiaData;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import java.time.Instant;
 import java.time.OffsetDateTime;
@@ -18,6 +21,8 @@ import java.util.List;
 
 @Repository
 public class EnergiaDataRepositoryImpl implements EnergiaDataRepository {
+
+    private static final Logger log = LoggerFactory.getLogger(EnergiaDataRepositoryImpl.class);
 
     private static final String MEASUREMENT = "energia";
 
@@ -36,9 +41,20 @@ public class EnergiaDataRepositoryImpl implements EnergiaDataRepository {
     @Override
     public void salvar(EnergiaData energiaData) {
         energiaData.setTime(Instant.now());
+        String experimentoId = MDC.get("experimentoId");
 
         WriteApiBlocking writeApi = influxDBClient.getWriteApiBlocking();
-        writeApi.writeMeasurement(WritePrecision.S, energiaData);
+        log.info("[EXPERIMENTO][INFLUX_INICIO] id={} measurement={} bucket={} instante={}",
+                experimentoId, MEASUREMENT, bucket, energiaData.getTime());
+        try {
+            writeApi.writeMeasurement(WritePrecision.S, energiaData);
+            log.info("[EXPERIMENTO][INFLUX_PERSISTIDO] id={} measurement={} bucket={} instante={}",
+                    experimentoId, MEASUREMENT, bucket, energiaData.getTime());
+        } catch (RuntimeException e) {
+            log.error("[EXPERIMENTO][INFLUX_FALHA] id={} measurement={} bucket={} instante={}",
+                    experimentoId, MEASUREMENT, bucket, energiaData.getTime(), e);
+            throw e;
+        }
     }
 
     @Override
