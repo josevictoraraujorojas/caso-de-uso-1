@@ -10,14 +10,20 @@ import com.influxdb.query.FluxTable;
 import org.example.casodeuso1.model.WifiData;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 public class WifiDataRepositoryImpl implements WifiDataRepository {
+
+    private static final Logger log = LoggerFactory.getLogger(WifiDataRepositoryImpl.class);
 
     private static final String MEASUREMENT = "trafego_wifi";
 
@@ -36,9 +42,23 @@ public class WifiDataRepositoryImpl implements WifiDataRepository {
     @Override
     public void salvar(WifiData wifiData) {
         wifiData.setTime(Instant.now());
+        Instant instanteRegistrado = wifiData.getTime().truncatedTo(ChronoUnit.SECONDS);
+        String experimentoId = MDC.get("experimentoId");
 
         WriteApiBlocking writeApi = influxDBClient.getWriteApiBlocking();
-        writeApi.writeMeasurement(WritePrecision.S, wifiData);
+        log.info("[EXPERIMENTO][INFLUX_INICIO] id={} measurement={} bucket={} instante={}",
+                experimentoId, MEASUREMENT, bucket, instanteRegistrado);
+        try {
+            writeApi.writeMeasurement(WritePrecision.S, wifiData);
+            log.info("[EXPERIMENTO][INFLUX_PERSISTIDO] id={} measurement={} bucket={} instante={} rssi={} canal={} tamanho={} snifferId={} predioId={} pontoAcessoId={} dispositivoWifiId={}",
+                    experimentoId, MEASUREMENT, bucket, instanteRegistrado, wifiData.getRssi(),
+                    wifiData.getCanal(), wifiData.getTamanho(), wifiData.getEspSnifferId(),
+                    wifiData.getPredioId(), wifiData.getPontoAcessoId(), wifiData.getDispositivoWifiId());
+        } catch (RuntimeException e) {
+            log.error("[EXPERIMENTO][INFLUX_FALHA] id={} measurement={} bucket={} instante={}",
+                    experimentoId, MEASUREMENT, bucket, instanteRegistrado, e);
+            throw e;
+        }
     }
 
     @Override
