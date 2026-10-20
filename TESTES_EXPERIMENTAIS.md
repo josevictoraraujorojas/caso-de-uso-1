@@ -66,3 +66,14 @@ Registre os resultados e compare-os com as associações esperadas para os dispo
 ## 6. Dados experimentais
 
 Repita o procedimento sob condições documentadas e registre: mensagens vistas no broker, mensagens recebidas, processamentos concluídos, gravações confirmadas pelo cliente InfluxDB, registros consultáveis no banco e erros observados. Use as contagens reais para calcular as taxas de recepção e persistência. Não trate um log do firmware como prova isolada de gravação no banco.
+
+
+## Salvamento dos logs do backend
+
+Execute a aplicação a partir da raiz deste repositório para salvar o console em um arquivo:
+
+```powershell
+mvn spring-boot:run 2>&1 | Tee-Object -FilePath experimento-backend.log
+```
+
+O arquivo `experimento-backend.log` será criado na pasta atual. Preserve um arquivo por execução e registre o intervalo de tempo do teste. Os logs indicam as operações processadas pela aplicação; confirme separadamente os registros no InfluxDB e as entidades, eventos ou relacionamentos esperados no Neo4j.
