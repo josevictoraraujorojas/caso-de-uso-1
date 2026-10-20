@@ -11,13 +11,19 @@ import org.example.casodeuso1.model.*;
 import org.example.casodeuso1.service.*;
 import org.example.casodeuso1.util.DataMapper;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.UUID;
 
 @Service
 public class MQTTListener {
+
+    private static final Logger log = LoggerFactory.getLogger(MQTTListener.class);
 
     private final MqttClient client;
     private final MQTTProperties properties;
@@ -56,7 +62,7 @@ public class MQTTListener {
     @PostConstruct
     private void iniciar() {
 
-        System.out.println("Listener MQTT iniciado");
+        log.info("[EXPERIMENTO][BACKEND] Listener MQTT iniciando.");
 
         try {
 
@@ -75,25 +81,27 @@ public class MQTTListener {
                 public void messageArrived(String topico, MqttMessage mensagem) {
 
                     String payload = new String(mensagem.getPayload());
+                    String experimentoId = UUID.randomUUID().toString().substring(0, 8);
+                    MDC.put("experimentoId", experimentoId);
 
-                    System.out.println("TOPICO: " + topico);
-                    System.out.println("PAYLOAD: " + payload);
+                    log.info(
+                            "[EXPERIMENTO][MQTT_RECEBIDO] id={} topico={} qos={} retained={} bytes={} payload={}",
+                            experimentoId, topico, mensagem.getQos(), mensagem.isRetained(),
+                            mensagem.getPayload().length, payload
+                    );
 
                     try {
-
                         switch (topico) {
-
                             case "energia" -> processarEnergia(payload);
-
                             case "wifi" -> processarWifi(payload);
-
                             case "monitorEnergia" -> processarMonitor(payload);
-
                             case "sniffer" -> processarSniffer(payload);
+                            default -> log.warn("[EXPERIMENTO][TOPICO_SEM_PROCESSADOR] id={} topico={}", experimentoId, topico);
                         }
-
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        log.error("[EXPERIMENTO][FALHA_PROCESSAMENTO] id={} topico={} payload={}", experimentoId, topico, payload, e);
+                    } finally {
+                        MDC.remove("experimentoId");
                     }
                 }
 
@@ -139,9 +147,12 @@ public class MQTTListener {
             energiaData.setPredioId(monitorEnergia.getMedidorEnergia().getFiltroLinha().getLaboratorio().getPredio().getId());
 
             energiaDataService.salvar(energiaData);
+            log.info("[EXPERIMENTO][PROCESSAMENTO_OK] id={} etapa=energia esp32Id={} instante={}",
+                    MDC.get("experimentoId"), energiaData.getEspId(), energiaData.getTime());
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("[EXPERIMENTO][FALHA_PROCESSAMENTO] id={} etapa=energia payload={}",
+                    MDC.get("experimentoId"), payload, e);
         }
     }
 
@@ -154,9 +165,12 @@ public class MQTTListener {
             dto.setDataInstalacao(new Date());
 
             monitorEnergiaService.salvarOuAtualizar(dto);
+            log.info("[EXPERIMENTO][CADASTRO_PROCESSADO] id={} tipo=monitorEnergia mac={}",
+                    MDC.get("experimentoId"), dto.getMacAddress());
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("[EXPERIMENTO][FALHA_PROCESSAMENTO] id={} etapa=monitorEnergia payload={}",
+                    MDC.get("experimentoId"), payload, e);
         }
     }
 
@@ -244,6 +258,8 @@ public class MQTTListener {
             relacionarSniffer(sniffer, cliente, pontoAcesso);
 
             salvarWifiData(wifiData, cliente, pontoAcesso, sniffer);
+            log.info("[EXPERIMENTO][PROCESSAMENTO_OK] id={} etapa=wifi snifferId={} clienteId={} pontoAcessoId={}",
+                    MDC.get("experimentoId"), sniffer.getId(), cliente.getId(), pontoAcesso.getId());
 
         } catch (Exception e) {
 
@@ -257,7 +273,8 @@ public class MQTTListener {
 
             System.err.println(payload);
 
-            e.printStackTrace();
+            log.error("[EXPERIMENTO][FALHA_PROCESSAMENTO] id={} etapa=wifi payload={}",
+                    MDC.get("experimentoId"), payload, e);
         }
     }
 
@@ -349,9 +366,12 @@ public class MQTTListener {
             dto.setDataInstalacao(new Date());
 
             snifferService.salvarOuAtualizar(dto);
+            log.info("[EXPERIMENTO][CADASTRO_PROCESSADO] id={} tipo=sniffer mac={}",
+                    MDC.get("experimentoId"), dto.getMacAddress());
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("[EXPERIMENTO][FALHA_PROCESSAMENTO] id={} etapa=sniffer payload={}",
+                    MDC.get("experimentoId"), payload, e);
         }
     }
 
