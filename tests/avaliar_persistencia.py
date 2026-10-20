@@ -102,8 +102,8 @@ def main():
         "registros_extras_ou_duplicados": extras,
         "erros_entrada": err_source,
         "erros_persistidos": err_target,
-        "taxa_persistencia_percentual": round(100 * len(target) / total, 2) if total else 0.0,
-        "taxa_integridade_percentual": round(100 * matched / total, 2) if total else 0.0,
+        "taxa_persistencia_percentual": round(100 * matched / total, 2) if total else 0.0,
+        "taxa_integridade_persistidos_percentual": round(100 * matched / len(target), 2) if target else 0.0,
         "nota": "Resultados válidos somente se a exportação representar o mesmo intervalo e os mesmos campos da entrada."
     }
     output = json.dumps(result, ensure_ascii=False, indent=2)
