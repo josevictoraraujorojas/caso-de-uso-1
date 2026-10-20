@@ -1,47 +1,68 @@
 # Procedimento experimental — backend do Caso de Uso 1
 
-## Objetivo
-Comparar mensagens observadas na entrada do fluxo com registros exportados do InfluxDB, verificando correspondência de campos e contagens para energia ou tráfego Wi-Fi.
+O backend consome mensagens MQTT dos tópicos de energia e Wi-Fi. Para este experimento, os logs identificam o recebimento, o processamento, a gravação no InfluxDB e erros. As mensagens são associadas ao mesmo identificador interno `id` durante o processamento síncrono.
 
-## Captura das mensagens de entrada
-Use uma captura por tópico, para não misturar os esquemas. Exemplo para energia:
+## 1. Executar o backend
 
-    mosquitto_sub -h HOST_DO_BROKER -p 1883 -t energia > entrada_energia.jsonl
+Na pasta raiz do repositório, use o Java/Maven configurado no ambiente:
 
-Para tráfego Wi-Fi:
+```powershell
+mvn spring-boot:run
+```
 
-    mosquitto_sub -h HOST_DO_BROKER -p 1883 -t wifi > entrada_wifi.jsonl
+Também é possível executar a classe `CasoDeUso1Application` pela IDE. Mantenha visível o console da aplicação.
 
-O broker usado na captura deve ser o mesmo ao qual o backend está conectado. Registre horário inicial/final, tópico e quantidade coletada.
+## 2. Gerar tráfego e observar a entrada
 
-## Preparação do arquivo persistido
-Exporte do InfluxDB os registros correspondentes ao mesmo intervalo e normalize o resultado para JSONL: um objeto JSON por linha, usando os nomes dos campos de entrada para os valores correspondentes. Não crie registros manualmente e não altere os valores para fazê-los coincidir. Se a aplicação transforma os dados, documente o mapeamento antes de comparar.
+Ligue o ESP32 PZEM e/ou o sniffer com o receptor serial em execução. No console do backend, procure:
 
-## Execução do comparador
-Teste as regras locais:
+```text
+[EXPERIMENTO][MQTT_RECEBIDO] id=abcd1234 topico=energia ... payload={...}
+```
 
-    py tests\avaliar_persistencia.py --autoteste
+Para Wi-Fi, o valor de `topico` deve ser `wifi`. O campo `payload` mostra o conteúdo que chegou ao backend por MQTT. Para observar o broker separadamente, use em outro terminal:
 
-Energia:
+```powershell
+mosquitto_sub -h HOST_DO_BROKER -p 1883 -t energia -v
+mosquitto_sub -h HOST_DO_BROKER -p 1883 -t wifi -v
+```
 
-    py tests\avaliar_persistencia.py --tipo energia --entrada entrada_energia.jsonl --persistidos persistidos_energia.jsonl --saida resultado_energia.json
+Use o host do broker configurado no seu ambiente. Cada comando observa um tópico; execute-os em terminais separados ou configure uma única assinatura com os tópicos necessários.
 
-Wi-Fi:
+## 3. Acompanhar processamento e gravação
 
-    py tests\avaliar_persistencia.py --tipo wifi --entrada entrada_wifi.jsonl --persistidos persistidos_wifi.jsonl --saida resultado_wifi.json
+Para energia, procure no console as seguintes marcas com o mesmo `id` do backend:
 
-O relatório apresenta contagens, correspondências, registros ausentes/extras e taxa de integridade por campos. O script retorna código diferente de zero quando encontra divergências.
+- `[EXPERIMENTO][MQTT_RECEBIDO]`: a mensagem chegou ao listener MQTT;
+- `[EXPERIMENTO][INFLUX_INICIO]`: a gravação do measurement `energia` foi iniciada;
+- `[EXPERIMENTO][INFLUX_PERSISTIDO]`: a chamada síncrona do InfluxDB retornou sem erro e o log lista os campos e IDs de contexto;
+- `[EXPERIMENTO][PROCESSAMENTO_OK]`: o fluxo de processamento de energia foi concluído;
+- `[EXPERIMENTO][FALHA_PROCESSAMENTO]` ou `[EXPERIMENTO][INFLUX_FALHA]`: indicam falha na etapa registrada.
 
-## Verificação do Neo4j
-A inspeção do grafo é complementar: no Neo4j Browser, consulte os rótulos e os relacionamentos existentes no ambiente e compare a estrutura observada com a associação esperada entre dispositivo, ponto de coleta e local. Consultas exploratórias que não pressupõem rótulos específicos:
+Para Wi-Fi, acompanhe os mesmos eventos com measurement `trafego_wifi`. O log `PROCESSAMENTO_OK` também informa os IDs do sniffer, cliente e ponto de acesso após a associação dos dados de contexto.
 
-    MATCH (n) RETURN labels(n) AS rotulos, count(*) AS quantidade;
-    MATCH (a)-[r]->(b) RETURN labels(a) AS origem, type(r) AS relacao, labels(b) AS destino, count(*) AS quantidade;
+O identificador `id` é gerado pelo backend ao receber a mensagem; ele não é adicionado ao JSON transmitido pelo ESP32. Para relacionar as etapas, compare esse registro com o payload idêntico mostrado no firmware ou no broker.
 
-Guarde os resultados da consulta como evidência. Defina antes do teste quais nós e relações deveriam existir.
+## 4. Confirmar independentemente no InfluxDB
 
-## Protocolo sugerido
-Use cinco repetições por fluxo, com pelo menos 30 mensagens por repetição quando possível. O comparador pressupõe uma relação um-para-um entre mensagens e registros exportados; se o backend agrega ou transforma registros, ajuste o mapeamento e documente essa decisão.
+Abra o Data Explorer do InfluxDB, selecione o bucket `caso_uso_1` e consulte o measurement `energia` ou `trafego_wifi` no intervalo do experimento. Compare timestamps, valores e tags com a linha `INFLUX_PERSISTIDO`. O log de sucesso indica que a chamada bloqueante de gravação retornou sem erro; a consulta no banco fornece uma evidência independente de que os dados estão disponíveis para leitura.
 
-## Limitação
-O script não se conecta diretamente ao InfluxDB nem ao Neo4j. Ele compara evidências exportadas e não substitui a inspeção de logs, a verificação da API nem a confirmação física dos dispositivos.
+## 5. Conferir as relações do grafo
+
+No Neo4j Browser, execute consultas exploratórias para verificar os rótulos e tipos de relacionamento realmente existentes:
+
+```cypher
+MATCH (n)
+RETURN labels(n) AS rotulos, count(*) AS quantidade;
+```
+
+```cypher
+MATCH (a)-[r]->(b)
+RETURN labels(a) AS origem, type(r) AS relacao, labels(b) AS destino, count(*) AS quantidade;
+```
+
+Registre os resultados e compare-os com as associações esperadas para os dispositivos, prédios, laboratórios, sniffer, clientes Wi-Fi e pontos de acesso. Nem todo ponto de medição temporal é um nó individual no grafo; as séries de energia e tráfego são armazenadas no InfluxDB.
+
+## 6. Dados experimentais
+
+Repita o procedimento sob condições documentadas e registre: mensagens vistas no broker, mensagens recebidas, processamentos concluídos, gravações confirmadas pelo cliente InfluxDB, registros consultáveis no banco e erros observados. Use as contagens reais para calcular as taxas de recepção e persistência. Não trate um log do firmware como prova isolada de gravação no banco.
