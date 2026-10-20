@@ -48,8 +48,12 @@ public class EnergiaDataRepositoryImpl implements EnergiaDataRepository {
                 experimentoId, MEASUREMENT, bucket, energiaData.getTime());
         try {
             writeApi.writeMeasurement(WritePrecision.S, energiaData);
-            log.info("[EXPERIMENTO][INFLUX_PERSISTIDO] id={} measurement={} bucket={} instante={}",
-                    experimentoId, MEASUREMENT, bucket, energiaData.getTime());
+            log.info("[EXPERIMENTO][INFLUX_PERSISTIDO] id={} measurement={} bucket={} instante={} tensao={} corrente={} potencia={} energiaKwh={} frequencia={} fatorPotencia={} espId={} medidorEnergiaId={} filtroId={} labId={} predioId={}",
+                    experimentoId, MEASUREMENT, bucket, energiaData.getTime(),
+                    energiaData.getTensao(), energiaData.getCorrente(), energiaData.getPotencia(),
+                    energiaData.getEnergiaKwh(), energiaData.getFrequencia(), energiaData.getFatorPotencia(),
+                    energiaData.getEspId(), energiaData.getMedidorEnergiaId(), energiaData.getFiltroId(),
+                    energiaData.getLabId(), energiaData.getPredioId());
         } catch (RuntimeException e) {
             log.error("[EXPERIMENTO][INFLUX_FALHA] id={} measurement={} bucket={} instante={}",
                     experimentoId, MEASUREMENT, bucket, energiaData.getTime(), e);
