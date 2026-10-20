@@ -38,7 +38,7 @@ public class WifiDataRepositoryImpl implements WifiDataRepository {
         wifiData.setTime(Instant.now());
 
         WriteApiBlocking writeApi = influxDBClient.getWriteApiBlocking();
-        writeApi.writeMeasurement(WritePrecision.S, wifiData);
+        writeApi.writeMeasurement(WritePrecision.MS, wifiData);
     }
 
     @Override

@@ -38,7 +38,7 @@ public class EnergiaDataRepositoryImpl implements EnergiaDataRepository {
         energiaData.setTime(Instant.now());
 
         WriteApiBlocking writeApi = influxDBClient.getWriteApiBlocking();
-        writeApi.writeMeasurement(WritePrecision.S, energiaData);
+        writeApi.writeMeasurement(WritePrecision.MS, energiaData);
     }
 
     @Override
