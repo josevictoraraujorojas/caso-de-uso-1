@@ -68,3 +68,53 @@ Confira o `pom.xml`, os arquivos de configuração e as instruções do próprio
 ## Observação
 
 Este README apresenta o papel arquitetural do repositório no TCC. Para documentar com precisão endpoints, classes, variáveis de ambiente e comandos de execução específicos, essas informações devem ser alinhadas aos arquivos presentes na versão atual do código.
+
+## Procedimento dos testes experimentais
+
+Esta seção documenta a execução e a coleta de evidências dos dois fluxos do Caso de Uso 1: monitoramento de energia e tráfego Wi-Fi. Os testes verificam o caminho entre MQTT, processamento do backend e armazenamento, sem assumir que uma mensagem recebida corresponde necessariamente a um registro persistido.
+
+### Preparação
+
+1. Confira a configuração do broker MQTT, InfluxDB e Neo4j nos arquivos locais de configuração e nas variáveis de ambiente exigidas pelo projeto.
+2. Inicie os serviços externos e confirme que estão acessíveis.
+3. Execute o backend na raiz do projeto. No Windows, se houver Maven Wrapper:
+
+```powershell
+New-Item -ItemType Directory -Force -Path "$HOME\TCC-Experimentos"
+.mvnw.cmd spring-boot:run 2>&1 |
+  Tee-Object -FilePath "$HOME\TCC-Experimentos\08-backend-caso1.log"
+```
+
+Se o wrapper não existir, use `mvn spring-boot:run` com Maven instalado. Inicie o backend antes dos firmwares.
+
+### Cenário A — Energia
+
+- Inicie um assinante MQTT no tópico `energia` e registre a saída em arquivo.
+- Execute o firmware PZEM do repositório [pzem-caso-uso1](https://github.com/josevictoraraujorojas/pzem-caso-uso1).
+- Aguarde o término indicado pelo firmware e salve o log serial.
+- Confira os marcadores do backend e consulte a medição `energia` no bucket `caso_uso_1` do InfluxDB.
+
+### Cenário B — Tráfego Wi-Fi
+
+- Inicie o assinante MQTT no tópico `wifi`.
+- Ligue/execute primeiro o ESP32 receptor e depois o ESP32 sniffer dos repositórios correspondentes.
+- Salve os logs seriais de ambos os dispositivos.
+- Compare os contadores UART/MQTT com o marcador de recebimento do backend e consulte a medição `trafego_wifi` no bucket `caso_uso_1`.
+
+### Instrumentação e leitura dos logs
+
+Procure pelos marcadores:
+
+- `[EXPERIMENTO][MQTT_RECEBIDO]`: o listener do backend recebeu uma mensagem;
+- `[EXPERIMENTO][INFLUX_INICIO]`: início da tentativa de escrita no InfluxDB;
+- `[EXPERIMENTO][INFLUX_PERSISTIDO]`: a chamada de escrita terminou sem erro reportado;
+- `[EXPERIMENTO][PROCESSAMENTO_OK]`: etapa de processamento concluída;
+- `[EXPERIMENTO][FALHA_PROCESSAMENTO]` e `[EXPERIMENTO][INFLUX_FALHA]`: falhas registradas.
+
+Use `Select-String -Path "$HOME\TCC-Experimentos\08-backend-caso1.log" -Pattern "\[EXPERIMENTO\]"` para filtrar os marcadores no PowerShell. Para contar recebimentos MQTT registrados no log: `(Select-String -Path "$HOME\TCC-Experimentos\08-backend-caso1.log" -Pattern "\[EXPERIMENTO\]\[MQTT_RECEBIDO\]").Count`.
+
+### Conferência dos resultados
+
+Para cada execução, anote data/hora, cenário, quantidade de mensagens observadas no broker, recebidas pelo backend, escritas sem erro e registros encontrados por consulta no InfluxDB, além de erros. No InfluxDB, confira o bucket `caso_uso_1`, a medição correspondente e o intervalo de tempo da execução. No Neo4j, confira as entidades/relacionamentos esperados para a configuração do caso, distinguindo dados preexistentes daqueles criados durante o teste.
+
+O marcador de escrita bem-sucedida é uma evidência de execução da chamada, não substitui a consulta ao banco. Mensagens MQTT, chamadas de escrita e registros consultados podem ter contagens diferentes. Faça cada repetição com arquivos de log separados.
