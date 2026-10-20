@@ -48,8 +48,10 @@ public class WifiDataRepositoryImpl implements WifiDataRepository {
                 experimentoId, MEASUREMENT, bucket, wifiData.getTime());
         try {
             writeApi.writeMeasurement(WritePrecision.S, wifiData);
-            log.info("[EXPERIMENTO][INFLUX_PERSISTIDO] id={} measurement={} bucket={} instante={}",
-                    experimentoId, MEASUREMENT, bucket, wifiData.getTime());
+            log.info("[EXPERIMENTO][INFLUX_PERSISTIDO] id={} measurement={} bucket={} instante={} rssi={} canal={} tamanho={} snifferId={} predioId={} pontoAcessoId={} dispositivoWifiId={}",
+                    experimentoId, MEASUREMENT, bucket, wifiData.getTime(), wifiData.getRssi(),
+                    wifiData.getCanal(), wifiData.getTamanho(), wifiData.getEspSnifferId(),
+                    wifiData.getPredioId(), wifiData.getPontoAcessoId(), wifiData.getDispositivoWifiId());
         } catch (RuntimeException e) {
             log.error("[EXPERIMENTO][INFLUX_FALHA] id={} measurement={} bucket={} instante={}",
                     experimentoId, MEASUREMENT, bucket, wifiData.getTime(), e);
