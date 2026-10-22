@@ -68,3 +68,12 @@ Confira o `pom.xml`, os arquivos de configuração e as instruções do próprio
 ## Observação
 
 Este README apresenta o papel arquitetural do repositório no TCC. Para documentar com precisão endpoints, classes, variáveis de ambiente e comandos de execução específicos, essas informações devem ser alinhadas aos arquivos presentes na versão atual do código.
+
+## Documentação da API (Swagger / OpenAPI)
+
+Após iniciar a aplicação, acesse a documentação interativa:
+
+- **Swagger UI:** http://localhost:8080/swagger-ui/index.html
+- **Especificação OpenAPI (JSON):** http://localhost:8080/v3/api-docs
+
+Se a aplicação estiver configurada em outra porta, substitua `8080` pela porta utilizada. O Springdoc identifica os endpoints dos controllers e gera os esquemas dos DTOs usados como parâmetros e respostas.
