@@ -118,3 +118,12 @@ Use `Select-String -Path "$HOME\TCC-Experimentos\08-backend-caso1.log" -Pattern 
 Para cada execução, anote data/hora, cenário, quantidade de mensagens observadas no broker, recebidas pelo backend, escritas sem erro e registros encontrados por consulta no InfluxDB, além de erros. No InfluxDB, confira o bucket `caso_uso_1`, a medição correspondente e o intervalo de tempo da execução. No Neo4j, confira as entidades/relacionamentos esperados para a configuração do caso, distinguindo dados preexistentes daqueles criados durante o teste.
 
 O marcador de escrita bem-sucedida é uma evidência de execução da chamada, não substitui a consulta ao banco. Mensagens MQTT, chamadas de escrita e registros consultados podem ter contagens diferentes. Faça cada repetição com arquivos de log separados.
+
+## Documentação da API (Swagger / OpenAPI)
+
+Após iniciar a aplicação, acesse a documentação interativa:
+
+- **Swagger UI:** http://localhost:8080/swagger-ui/index.html
+- **Especificação OpenAPI (JSON):** http://localhost:8080/v3/api-docs
+
+Se a aplicação estiver configurada em outra porta, substitua `8080` pela porta utilizada. O Springdoc identifica os endpoints dos controllers e gera os esquemas dos DTOs usados como parâmetros e respostas.
