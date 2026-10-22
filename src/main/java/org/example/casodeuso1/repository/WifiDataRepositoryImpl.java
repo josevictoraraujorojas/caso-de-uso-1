@@ -49,7 +49,7 @@ public class WifiDataRepositoryImpl implements WifiDataRepository {
         log.info("[EXPERIMENTO][INFLUX_INICIO] id={} measurement={} bucket={} instante={}",
                 experimentoId, MEASUREMENT, bucket, instanteRegistrado);
         try {
-            writeApi.writeMeasurement(WritePrecision.S, wifiData);
+            writeApi.writeMeasurement(WritePrecision.MS, wifiData);
             log.info("[EXPERIMENTO][INFLUX_PERSISTIDO] id={} measurement={} bucket={} instante={} rssi={} canal={} tamanho={} snifferId={} predioId={} pontoAcessoId={} dispositivoWifiId={}",
                     experimentoId, MEASUREMENT, bucket, instanteRegistrado, wifiData.getRssi(),
                     wifiData.getCanal(), wifiData.getTamanho(), wifiData.getEspSnifferId(),
@@ -156,7 +156,7 @@ public class WifiDataRepositoryImpl implements WifiDataRepository {
 
         data.setRssi(toInteger(record.getValueByKey("rssi")));
         data.setTamanho(toInteger(record.getValueByKey("tamanho_bytes")));
-        data.setCanal(toInteger(record.getValueByKey("chanel")));
+        data.setCanal(toInteger(record.getValueByKey("canal")));
 
         data.setEspSnifferId(toLong(record.getValueByKey("esp_sniffer_id")));
         data.setPredioId(toLong(record.getValueByKey("predio_id")));
